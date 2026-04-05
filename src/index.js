@@ -138,6 +138,34 @@ function wrap(text, font, maxWidth) {
 }
 
 /**
+ * Measure multi-line text (already containing \n).
+ * Returns max width across lines, total height, and per-line metrics.
+ *
+ * @param {string} text - Text with \n line breaks
+ * @param {string} font
+ * @param {number} lineSpacing - Multiplier for line height (default 1.4)
+ * @returns {{ maxWidth: number, totalHeight: number, lineCount: number, lines: { text: string, width: number, height: number }[] }}
+ */
+function measureMultiline(text, font = '14px Helvetica', lineSpacing = 1.4) {
+  const lineTexts = text.split('\n');
+  const fontSize = parseFloat(font);
+  const lineHeight = fontSize * lineSpacing;
+  let maxWidth = 0;
+  const lines = lineTexts.map(line => {
+    const m = measure(line, font);
+    if (m.width > maxWidth) maxWidth = m.width;
+    return { text: line, width: m.width, height: m.height };
+  });
+
+  return {
+    maxWidth,
+    totalHeight: lineTexts.length * lineHeight,
+    lineCount: lineTexts.length,
+    lines,
+  };
+}
+
+/**
  * Clear the measurement cache.
  */
 function clearCache() {
@@ -148,6 +176,7 @@ module.exports = {
   measure,
   width,
   measureBatch,
+  measureMultiline,
   centerX,
   centerY,
   wrap,

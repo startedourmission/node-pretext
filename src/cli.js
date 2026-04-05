@@ -4,12 +4,13 @@
  * node-pretext CLI
  *
  * Usage:
- *   node-pretext "14px Helvetica" "Hello World"        → prints width
- *   node-pretext --json "14px Helvetica" "Hello World"  → prints full metrics as JSON
+ *   node-pretext "14px Helvetica" "Hello World"            → prints width
+ *   node-pretext --json "14px Helvetica" "Hello World"     → full metrics as JSON
+ *   node-pretext --multiline "14px Helvetica" "Line1\nL2"  → multi-line metrics
  *   echo '[{"font":"14px Helvetica","text":"Hi"}]' | node-pretext --batch
  */
 
-const { measure, measureBatch } = require('./index');
+const { measure, measureBatch, measureMultiline } = require('./index');
 
 const args = process.argv.slice(2);
 
@@ -27,6 +28,11 @@ if (args[0] === '--batch') {
       process.exit(1);
     }
   });
+} else if (args[0] === '--multiline' && args.length >= 3) {
+  const font = args[1];
+  const text = args[2].replace(/\\n/g, '\n');
+  const result = measureMultiline(text, font);
+  console.log(JSON.stringify(result, null, 2));
 } else if (args.length >= 2) {
   const json = args[0] === '--json';
   const font = json ? args[1] : args[0];
@@ -46,7 +52,8 @@ if (args[0] === '--batch') {
 } else {
   console.log('node-pretext - Server-side text measurement\n');
   console.log('Usage:');
-  console.log('  node-pretext "14px Helvetica" "Hello"         width only');
-  console.log('  node-pretext --json "14px Helvetica" "Hello"  full metrics');
-  console.log('  echo \'[...]\' | node-pretext --batch           batch mode');
+  console.log('  node-pretext "14px Helvetica" "Hello"                  width only');
+  console.log('  node-pretext --json "14px Helvetica" "Hello"           full metrics');
+  console.log('  node-pretext --multiline "14px Helvetica" "L1\\nL2"    multi-line');
+  console.log('  echo \'[...]\' | node-pretext --batch                    batch mode');
 }

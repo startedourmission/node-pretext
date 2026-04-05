@@ -1,6 +1,6 @@
 {
   "name": "node-pretext",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Server-side text measurement for Node.js. Accurate font-aware width/height calculation without a browser, powered by node-canvas. The missing piece for programmatic layout in SVG, PDF, Canvas, Excalidraw, and beyond.",
   "main": "src/index.js",
   "bin": {
